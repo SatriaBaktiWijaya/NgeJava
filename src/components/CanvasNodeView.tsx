@@ -5,9 +5,10 @@ import { useBuilderStore } from '../store/useBuilderStore';
 
 interface CanvasNodeViewProps {
   node: CanvasNode;
+  isDarkPreview?: boolean;
 }
 
-export const CanvasNodeView: React.FC<CanvasNodeViewProps> = ({ node }) => {
+export const CanvasNodeView: React.FC<CanvasNodeViewProps> = ({ node, isDarkPreview = true }) => {
   const selectedComponentId = useBuilderStore((s) => s.selectedComponentId);
   const selectComponent = useBuilderStore((s) => s.selectComponent);
   const resizeComponent = useBuilderStore((s) => s.resizeComponent);
@@ -85,28 +86,48 @@ export const CanvasNodeView: React.FC<CanvasNodeViewProps> = ({ node }) => {
     selectComponent(node.id);
   };
 
-  // Render Swing component look & feel
+  // Render component visual representation
   const renderControl = () => {
     switch (node.type) {
       case 'JPanel':
         return (
           <div
-            className={`w-full h-full border rounded-sm relative transition-colors ${
-              isOver ? 'border-[#007acc] bg-[#007acc]/10' : 'border-[#b0b0b0]'
+            className={`w-full h-full rounded-md relative transition-colors ${
+              isDarkPreview
+                ? isOver
+                  ? 'border-2 border-indigo-500 bg-indigo-500/10'
+                  : 'border border-white/[0.14] bg-white/[0.04]'
+                : isOver
+                ? 'border-2 border-indigo-500 bg-indigo-500/10'
+                : 'border border-[#b0b0b0]'
             }`}
             style={{
-              backgroundColor: String(node.props.background || '#ffffff'),
+              backgroundColor: node.props.background && node.props.background !== '#ffffff'
+                ? String(node.props.background)
+                : undefined,
             }}
           >
             {/* Render nested children */}
             {node.children.map((child) => (
-              <CanvasNodeView key={child.id} node={child} />
+              <CanvasNodeView key={child.id} node={child} isDarkPreview={isDarkPreview} />
             ))}
           </div>
         );
 
       case 'JButton':
-        return (
+        return isDarkPreview ? (
+          <button
+            type="button"
+            disabled={node.props.enabled === false}
+            className={`w-full h-full flex items-center justify-center text-xs px-2.5 rounded-md border font-medium select-none transition shadow-sm ${
+              node.props.enabled === false
+                ? 'bg-zinc-800 text-zinc-500 border-white/[0.05] cursor-not-allowed'
+                : 'bg-gradient-to-b from-[#2d2d42] to-[#202032] hover:from-[#35354e] hover:to-[#26263c] text-white border-white/[0.15] active:scale-[0.98] cursor-pointer'
+            }`}
+          >
+            <span className="truncate">{String(node.props.text ?? 'Button')}</span>
+          </button>
+        ) : (
           <button
             type="button"
             disabled={node.props.enabled === false}
@@ -122,13 +143,21 @@ export const CanvasNodeView: React.FC<CanvasNodeViewProps> = ({ node }) => {
 
       case 'JLabel':
         return (
-          <div className="w-full h-full flex items-center font-sans text-xs text-[#111111] px-1 truncate select-none">
+          <div className={`w-full h-full flex items-center text-xs px-1 truncate select-none font-medium ${
+            isDarkPreview ? 'text-zinc-200' : 'text-[#111111]'
+          }`}>
             {String(node.props.text ?? 'Label')}
           </div>
         );
 
       case 'JTextField':
-        return (
+        return isDarkPreview ? (
+          <div className="w-full h-full flex items-center text-xs bg-[#101018] text-zinc-100 px-2.5 border border-white/[0.14] rounded-md shadow-inner select-none truncate">
+            {String(node.props.text ?? '') || (
+              <span className="text-zinc-600 italic">JTextField</span>
+            )}
+          </div>
+        ) : (
           <div className="w-full h-full flex items-center font-sans text-xs bg-white text-[#111111] px-2 border border-[#7f9db9] shadow-inner select-none truncate">
             {String(node.props.text ?? '') || (
               <span className="text-gray-400 italic">JTextField</span>
@@ -137,7 +166,13 @@ export const CanvasNodeView: React.FC<CanvasNodeViewProps> = ({ node }) => {
         );
 
       case 'JTextArea':
-        return (
+        return isDarkPreview ? (
+          <div className="w-full h-full text-xs bg-[#101018] text-zinc-100 p-2 border border-white/[0.14] rounded-md shadow-inner select-none overflow-hidden whitespace-pre-wrap">
+            {String(node.props.text ?? '') || (
+              <span className="text-zinc-600 italic">JTextArea</span>
+            )}
+          </div>
+        ) : (
           <div className="w-full h-full font-sans text-xs bg-white text-[#111111] p-1.5 border border-[#7f9db9] shadow-inner select-none overflow-hidden whitespace-pre-wrap">
             {String(node.props.text ?? '') || (
               <span className="text-gray-400 italic">JTextArea</span>
@@ -147,20 +182,22 @@ export const CanvasNodeView: React.FC<CanvasNodeViewProps> = ({ node }) => {
 
       case 'JCheckBox':
         return (
-          <div className="w-full h-full flex items-center gap-1.5 font-sans text-xs text-[#111111] px-1 select-none">
+          <div className={`w-full h-full flex items-center gap-2 text-xs px-1 select-none ${
+            isDarkPreview ? 'text-zinc-200' : 'text-[#111111]'
+          }`}>
             <input
               type="checkbox"
               checked={Boolean(node.props.selected)}
               readOnly
-              className="w-3.5 h-3.5 accent-[#007acc] pointer-events-none"
+              className="w-3.5 h-3.5 accent-indigo-500 pointer-events-none rounded cursor-pointer"
             />
-            <span className="truncate">{String(node.props.text ?? 'CheckBox')}</span>
+            <span className="truncate font-medium">{String(node.props.text ?? 'CheckBox')}</span>
           </div>
         );
 
       default:
         return (
-          <div className="w-full h-full border border-dashed border-gray-400 p-1 text-[11px] text-gray-700">
+          <div className="w-full h-full border border-dashed border-zinc-500 p-1 text-[11px] text-zinc-400">
             {node.type}
           </div>
         );
@@ -180,18 +217,18 @@ export const CanvasNodeView: React.FC<CanvasNodeViewProps> = ({ node }) => {
         zIndex: isDragging ? 999 : isSelected ? 50 : 10,
         opacity: isDragging ? 0.7 : 1,
       }}
-      className={`group ${
+      className={`group transition-shadow ${
         isSelected
-          ? 'ring-1.5 ring-zinc-800 ring-offset-1 ring-offset-transparent'
-          : 'hover:ring-1 hover:ring-zinc-400/50'
+          ? 'ring-2 ring-indigo-500 shadow-glow-sm'
+          : 'hover:ring-1 hover:ring-indigo-400/50'
       }`}
     >
-      {/* Draggable handle bar / badge on select */}
+      {/* Sleek floating variable badge on select */}
       {isSelected && (
         <div
           {...listeners}
           {...attributes}
-          className="absolute -top-5 left-0 px-1.5 py-0.5 rounded-[2px] bg-[#18181b] border border-zinc-700 text-zinc-200 text-[9px] font-mono tracking-tight cursor-move flex items-center gap-1 shadow-micro select-none"
+          className="absolute -top-6 left-0 px-2 py-0.5 rounded-md bg-indigo-600 text-white text-[10px] font-mono font-semibold tracking-tight cursor-move flex items-center gap-1 shadow-lg shadow-indigo-600/30 border border-indigo-400/40 select-none z-50"
         >
           <span>{node.varName}</span>
         </div>
@@ -206,7 +243,7 @@ export const CanvasNodeView: React.FC<CanvasNodeViewProps> = ({ node }) => {
       {isSelected && (
         <div
           onMouseDown={handleResizeMouseDown}
-          className="absolute -bottom-1 -right-1 w-2 h-2 bg-zinc-800 border border-zinc-400 rounded-[1px] cursor-se-resize z-50"
+          className="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-indigo-500 border-2 border-white rounded-sm cursor-se-resize z-50 shadow-md shadow-indigo-500/50"
           title="Drag to resize"
         />
       )}

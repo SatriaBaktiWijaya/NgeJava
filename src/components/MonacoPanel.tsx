@@ -1,8 +1,9 @@
 import React, { useRef, useEffect } from 'react';
 import Editor, { OnMount } from '@monaco-editor/react';
 import type * as Monaco from 'monaco-editor';
-import { Copy, Check } from 'lucide-react';
+import { Copy, Check, FileCode2, Lock } from 'lucide-react';
 import { Button } from './ui/button';
+import { Badge } from './ui/badge';
 import { Tooltip, TooltipTrigger, TooltipContent } from './ui/tooltip';
 
 interface MonacoPanelProps {
@@ -44,7 +45,7 @@ export const MonacoPanel: React.FC<MonacoPanelProps> = ({
           },
           options: {
             isWholeLine: true,
-            className: 'bg-zinc-800/80 border-l-2 border-foreground',
+            className: 'monaco-line-highlight',
           },
         },
       ]);
@@ -60,52 +61,56 @@ export const MonacoPanel: React.FC<MonacoPanelProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full w-full bg-[#101012]">
-      {/* Editor Header */}
-      <div className="h-10 bg-background border-b border-border flex items-center justify-between px-3 text-xs">
+    <div className="flex flex-col h-full w-full bg-[#12121a]">
+      {/* Tab Header Bar */}
+      <div className="h-11 bg-[#0c0c14] border-b border-white/[0.08] flex items-center justify-between px-3 text-xs">
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-[3px] bg-secondary border border-border">
-            <span className="font-mono text-xs text-foreground">GeneratedForm.java</span>
+          {/* Active File Tab */}
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-t-lg bg-[#181824] border-t-2 border-indigo-500 border-x border-white/[0.08] text-white shadow-xs">
+            <FileCode2 className="w-3.5 h-3.5 text-indigo-400" />
+            <span className="font-mono text-xs font-medium">GeneratedForm.java</span>
           </div>
 
-          <span className="text-[10px] font-mono text-muted-foreground">
+          <Badge variant="outline" className="text-[10px] font-mono text-zinc-400 border-white/[0.08] bg-white/[0.02]">
             Java Swing
-          </span>
+          </Badge>
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Muted Pastel Tag for Read-only State */}
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded-[3px] bg-[#291e0a] text-[#fde047] border border-[#523c14]">
-            Read-only
-          </span>
+          {/* Read-Only Status Pill */}
+          <Badge variant="outline" className="gap-1 text-[10px] font-mono font-normal px-2 py-0.5 border-amber-500/25 text-amber-400 bg-amber-500/10">
+            <Lock className="w-2.5 h-2.5" />
+            <span>Read-only</span>
+          </Badge>
 
+          {/* Copy Button */}
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
                 onClick={handleCopy}
-                className="h-6 px-2 text-xs font-normal text-muted-foreground hover:text-foreground hover:bg-secondary rounded-[3px] border border-border"
+                className="h-7 px-2.5 text-xs text-zinc-300 hover:text-white bg-white/[0.03] hover:bg-white/[0.08] border-white/[0.08] rounded-lg transition-all"
               >
                 {copied ? (
                   <>
-                    <Check className="w-3 h-3 text-emerald-400 mr-1" />
-                    <span className="text-emerald-400">Copied</span>
+                    <Check className="w-3 h-3 text-emerald-400 mr-1.5" />
+                    <span className="text-emerald-400 font-medium">Copied</span>
                   </>
                 ) : (
                   <>
-                    <Copy className="w-3 h-3 mr-1" />
+                    <Copy className="w-3 h-3 mr-1.5 text-zinc-400" />
                     <span>Copy</span>
                   </>
                 )}
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Copy Java code</TooltipContent>
+            <TooltipContent>Copy Java source</TooltipContent>
           </Tooltip>
         </div>
       </div>
 
-      {/* Editor Surface */}
+      {/* Editor Canvas */}
       <div className="flex-1 w-full h-full relative">
         <Editor
           height="100%"
@@ -116,13 +121,13 @@ export const MonacoPanel: React.FC<MonacoPanelProps> = ({
           options={{
             readOnly: true,
             domReadOnly: true,
-            minimap: { enabled: false }, // Minimalist: no visual clutter
+            minimap: { enabled: true, maxColumn: 80 },
             scrollBeyondLastLine: false,
-            fontSize: 12.5,
+            fontSize: 13,
             fontFamily: "'Geist Mono', 'JetBrains Mono', monospace",
             lineNumbers: 'on',
             lineNumbersMinChars: 3,
-            renderWhitespace: 'none',
+            renderWhitespace: 'selection',
             automaticLayout: true,
             tabSize: 4,
             wordWrap: 'off',

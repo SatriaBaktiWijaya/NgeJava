@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDroppable } from '@dnd-kit/core';
+import { Monitor, Sun, Moon, Sparkles, Box } from 'lucide-react';
 import { useBuilderStore } from '../store/useBuilderStore';
 import { CanvasNodeView } from './CanvasNodeView';
 
 export const Canvas: React.FC = () => {
+  const [previewTheme, setPreviewTheme] = useState<'dark' | 'classic'>('dark');
+
   const tree = useBuilderStore((s) => s.tree);
   const rootId = useBuilderStore((s) => s.rootId);
   const selectedComponentId = useBuilderStore((s) => s.selectedComponentId);
@@ -16,7 +19,7 @@ export const Canvas: React.FC = () => {
 
   if (!tree || !rootId) {
     return (
-      <div className="flex-1 h-full bg-[#0c0c0e] flex items-center justify-center text-muted-foreground text-xs font-mono">
+      <div className="flex-1 h-full bg-[#09090e] flex items-center justify-center text-zinc-500 text-xs font-mono">
         No active JFrame
       </div>
     );
@@ -33,72 +36,117 @@ export const Canvas: React.FC = () => {
   };
 
   return (
-    <div className="flex-1 h-full bg-[#0c0c0e] flex flex-col min-w-[400px] overflow-hidden relative select-none">
+    <div className="flex-1 h-full bg-[#09090e] flex flex-col min-w-0 overflow-hidden relative select-none">
       {/* Canvas Top Bar */}
-      <div className="h-10 px-3 border-b border-border flex items-center justify-between text-xs shrink-0 bg-background">
-        <div className="flex items-center gap-2">
-          <span className="font-medium text-foreground tracking-tight">Form Designer</span>
-          <span className="text-[10px] font-mono text-muted-foreground">null layout</span>
+      <div className="h-11 px-3.5 border-b border-white/[0.08] flex items-center justify-between text-xs shrink-0 bg-[#0c0c14] gap-2">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="flex items-center gap-2">
+            <Box className="w-4 h-4 text-indigo-400 shrink-0" />
+            <span className="font-semibold text-white tracking-tight truncate">Form Designer</span>
+          </div>
+          <span className="text-[10px] font-mono text-zinc-400 border border-white/[0.08] bg-white/[0.02] px-2 py-0.5 rounded hidden md:inline-block">
+            null layout
+          </span>
         </div>
 
-        <div className="text-[10px] font-mono text-muted-foreground">
-          {width} × {height} px
+        <div className="flex items-center gap-2 shrink-0">
+          {/* Theme Switcher for Form Preview (Solves the blinding cream clash) */}
+          <div className="flex items-center bg-white/[0.04] border border-white/[0.08] rounded-lg p-0.5 gap-0.5">
+            <button
+              onClick={() => setPreviewTheme('dark')}
+              className={`flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium transition-all ${
+                previewTheme === 'dark'
+                  ? 'bg-indigo-600 text-white shadow-xs'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
+              title="Modern Dark Swing Preview"
+            >
+              <Moon className="w-3 h-3" />
+              <span>Dark</span>
+            </button>
+            <button
+              onClick={() => setPreviewTheme('classic')}
+              className={`flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium transition-all ${
+                previewTheme === 'classic'
+                  ? 'bg-zinc-700 text-white shadow-xs'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
+              title="Classic Swing (Nimbus / OS default)"
+            >
+              <Sun className="w-3 h-3" />
+              <span>Classic</span>
+            </button>
+          </div>
+
+          <div className="flex items-center gap-1 text-[10px] font-mono text-zinc-300 bg-white/[0.05] border border-white/[0.08] px-2 py-1 rounded-md">
+            <Monitor className="w-3 h-3 text-indigo-400" />
+            <span>{width}×{height}</span>
+          </div>
         </div>
       </div>
 
-      {/* Canvas Workspace with Micro-Dot Grid */}
+      {/* Canvas Studio Workbench */}
       <div
-        className="flex-1 overflow-auto p-8 relative flex items-center justify-center bg-[#0c0c0e]"
+        className="flex-1 overflow-auto p-10 relative flex items-center justify-center bg-[#09090e]"
         onClick={() => selectComponent(null)}
         style={{
-          backgroundImage: 'radial-gradient(#1f1f23 1px, transparent 1px)',
-          backgroundSize: '16px 16px',
+          backgroundImage: `
+            radial-gradient(circle at center, rgba(99, 102, 241, 0.07) 0%, transparent 65%),
+            radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px)
+          `,
+          backgroundSize: '100% 100%, 20px 20px',
         }}
       >
-        {/* Faux-OS Window Chrome */}
+        {/* Modern Window Chrome Frame */}
         <div
           onClick={handleFrameClick}
           style={{ width: `${width}px`, height: `${height}px` }}
-          className={`rounded-[6px] border flex flex-col relative transition-all duration-150 overflow-hidden shadow-micro ${
+          className={`rounded-xl border flex flex-col relative transition-all duration-200 overflow-hidden shadow-2xl ${
             isRootSelected
-              ? 'border-foreground/80 ring-1 ring-foreground/20'
-              : 'border-border hover:border-foreground/30'
+              ? 'border-indigo-500 ring-2 ring-indigo-500/40 shadow-indigo-500/10'
+              : 'border-white/[0.14] hover:border-white/[0.25]'
           }`}
         >
-          {/* Window Top Bar with Three Subtle Dots */}
-          <div className="h-7 bg-[#1c1c1f] border-b border-[#2a2a2e] px-3 flex items-center justify-between text-xs text-foreground shrink-0 cursor-default">
-            <div className="flex items-center gap-1.5 opacity-60">
-              <div className="w-2 h-2 rounded-full bg-[#4a4a50]" />
-              <div className="w-2 h-2 rounded-full bg-[#4a4a50]" />
-              <div className="w-2 h-2 rounded-full bg-[#4a4a50]" />
+          {/* Window Top Bar */}
+          <div className="h-8 bg-[#181824] border-b border-white/[0.08] px-3.5 flex items-center justify-between text-xs text-foreground shrink-0 cursor-default">
+            {/* macOS Window Action Dots */}
+            <div className="flex items-center gap-1.5">
+              <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f56] border border-[#e0443e] shadow-xs" />
+              <div className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e] border border-[#dea123] shadow-xs" />
+              <div className="w-2.5 h-2.5 rounded-full bg-[#27c93f] border border-[#1aab29] shadow-xs" />
             </div>
 
-            <div className="text-[11px] font-normal truncate max-w-[240px] text-zinc-300">
-              {title}
+            <div className="flex items-center gap-1.5 font-medium text-xs text-zinc-200 truncate max-w-[260px]">
+              <span>{title}</span>
             </div>
 
-            <div className="w-8" />
+            <div className="w-10" />
           </div>
 
-          {/* Droppable Swing Surface */}
+          {/* Droppable Swing Content Canvas Area */}
           <div
             ref={setNodeRef}
             className={`flex-1 relative overflow-hidden transition-colors ${
-              isOver ? 'bg-[#ece9d8]/90 ring-1 ring-inset ring-foreground/30' : 'bg-[#ece9d8]'
-            }`}
+              previewTheme === 'dark'
+                ? 'bg-[#151520] text-zinc-100'
+                : 'bg-[#ece9d8] text-zinc-900'
+            } ${isOver ? 'ring-2 ring-inset ring-indigo-500/60' : ''}`}
           >
             {tree.children.length === 0 && (
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 text-zinc-500 pointer-events-none select-none">
-                <p className="font-normal text-zinc-600 text-xs font-mono">Empty Frame</p>
-                <p className="text-[11px] text-zinc-400 mt-0.5">
-                  Drag Swing components from palette or click +
+                <div className="p-3 rounded-full bg-indigo-500/10 text-indigo-400 mb-2">
+                  <Sparkles className="w-6 h-6" />
+                </div>
+                <p className="font-semibold text-zinc-300 text-xs">Ready for Swing Components</p>
+                <p className="text-[11px] text-zinc-500 mt-1 max-w-xs leading-relaxed">
+                  Drag controls from the left palette or click '+' to start composing.
                 </p>
               </div>
             )}
 
             {/* Render children nodes */}
             {tree.children.map((child) => (
-              <CanvasNodeView key={child.id} node={child} />
+              <CanvasNodeView key={child.id} node={child} isDarkPreview={previewTheme === 'dark'} />
             ))}
           </div>
         </div>

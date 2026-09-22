@@ -8,9 +8,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Geist', 'SF Pro Display', 'Helvetica Neue', 'sans-serif'],
+        sans: ['Geist', 'Outfit', 'Inter', '-apple-system', 'sans-serif'],
         mono: ['"Geist Mono"', '"JetBrains Mono"', 'monospace'],
-        serif: ['"Instrument Serif"', 'Newsreader', 'serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -46,20 +45,26 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        pastel: {
-          blue: { bg: '#132230', text: '#7dd3fc', border: '#1e3a5f' },
-          green: { bg: '#122417', text: '#86efac', border: '#1d4a2b' },
-          yellow: { bg: '#291e0a', text: '#fde047', border: '#523c14' },
-          red: { bg: '#2b1416', text: '#fca5a5', border: '#542025' },
-        }
+        brand: {
+          50: '#eef2ff',
+          100: '#e0e7ff',
+          400: '#818cf8',
+          500: '#6366f1',
+          600: '#4f46e5',
+          700: '#4338ca',
+          glow: 'rgba(99, 102, 241, 0.35)',
+        },
       },
       borderRadius: {
-        lg: "6px",
-        md: "4px",
-        sm: "3px",
+        lg: "0.5rem",
+        md: "0.375rem",
+        sm: "0.25rem",
       },
       boxShadow: {
-        'micro': '0 1px 2px rgba(0, 0, 0, 0.04)',
+        'glow-sm': '0 0 12px rgba(99, 102, 241, 0.25)',
+        'glow-md': '0 0 20px rgba(99, 102, 241, 0.35)',
+        'glow-lg': '0 0 35px rgba(99, 102, 241, 0.45)',
+        'window': '0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 1px 1px rgba(255, 255, 255, 0.1)',
       },
     },
   },

@@ -3,7 +3,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 interface SplitPaneProps {
   left: React.ReactNode;
   right: React.ReactNode;
-  defaultRatio?: number; // 0.0 to 1.0 (left portion)
+  defaultRatio?: number;
   minLeftWidth?: number;
   minRightWidth?: number;
   onRatioChange?: (ratio: number) => void;
@@ -12,8 +12,8 @@ interface SplitPaneProps {
 export const SplitPane: React.FC<SplitPaneProps> = ({
   left,
   right,
-  defaultRatio = 0.55,
-  minLeftWidth = 600,
+  defaultRatio = 0.60,
+  minLeftWidth = 780,
   minRightWidth = 350,
   onRatioChange,
 }) => {
@@ -35,7 +35,6 @@ export const SplitPane: React.FC<SplitPaneProps> = ({
       const containerWidth = rect.width;
       const mouseX = e.clientX - rect.left;
 
-      // Clamp between minLeftWidth and containerWidth - minRightWidth
       const clampedX = Math.max(minLeftWidth, Math.min(containerWidth - minRightWidth, mouseX));
       const newRatio = clampedX / containerWidth;
 
@@ -66,7 +65,7 @@ export const SplitPane: React.FC<SplitPaneProps> = ({
       {/* Left panel (Builder: Palette + Canvas + Inspector) */}
       <div
         style={{ width: `${ratio * 100}%` }}
-        className="h-full flex overflow-hidden relative border-r border-border"
+        className="h-full flex overflow-hidden relative border-r border-white/[0.08]"
       >
         {left}
       </div>
@@ -74,10 +73,10 @@ export const SplitPane: React.FC<SplitPaneProps> = ({
       {/* Resizable Divider */}
       <div
         onMouseDown={handleMouseDown}
-        className="w-1.5 hover:w-2 bg-border/80 hover:bg-primary transition-all cursor-col-resize flex items-center justify-center z-30 group select-none"
+        className="w-1.5 hover:w-2 bg-white/[0.06] hover:bg-indigo-500 hover:shadow-glow-sm transition-all cursor-col-resize flex items-center justify-center z-30 group select-none"
         title="Drag to resize panels"
       >
-        <div className="h-6 w-0.5 bg-muted-foreground/40 group-hover:bg-primary-foreground rounded-full" />
+        <div className="h-8 w-0.5 bg-zinc-600 group-hover:bg-white rounded-full transition-colors" />
       </div>
 
       {/* Right panel (Monaco Code Editor) */}

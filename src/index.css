@@ -4,59 +4,47 @@
 
 @layer base {
   :root {
-    /* Minimalist-UI Warm Monochrome Palette */
-    --background: 240 6% 5%;       /* #0c0c0e */
-    --foreground: 0 0% 93%;        /* #ededed */
+    --background: 245 25% 4.5%;      /* #09090e deep obsidian */
+    --foreground: 220 20% 97%;       /* #f4f5f8 crisp white-slate */
 
-    --card: 240 5% 7.5%;           /* #131315 */
-    --card-foreground: 0 0% 93%;
+    --card: 245 20% 7.5%;            /* #11111a rich surface */
+    --card-foreground: 220 20% 97%;
 
-    --popover: 240 5% 7.5%;
-    --popover-foreground: 0 0% 93%;
+    --popover: 245 22% 8.5%;
+    --popover-foreground: 220 20% 97%;
 
-    --primary: 0 0% 93%;           /* Solid off-white for CTA */
-    --primary-foreground: 240 6% 6%;
+    --primary: 239 84% 67%;          /* #6366f1 vibrant electric indigo */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 4% 11%;
-    --secondary-foreground: 0 0% 93%;
+    --secondary: 245 15% 13%;        /* #1c1c28 elevated elements */
+    --secondary-foreground: 220 20% 95%;
 
-    --muted: 240 4% 11%;
-    --muted-foreground: 240 3% 55%;
+    --muted: 245 12% 14%;            /* #1d1d28 */
+    --muted-foreground: 220 12% 62%; /* #9396a8 balanced secondary text */
 
-    --accent: 240 4% 13%;
-    --accent-foreground: 0 0% 93%;
+    --accent: 245 18% 16%;
+    --accent-foreground: 220 20% 98%;
 
-    --destructive: 355 60% 30%;
-    --destructive-foreground: 0 0% 95%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 240 4% 13.5%;        /* Crisp 1px boundary #222225 */
-    --input: 240 4% 13.5%;
-    --ring: 240 4% 30%;
+    --border: 245 15% 15%;           /* #20202e crisp subtle border */
+    --input: 245 15% 15%;
+    --ring: 239 84% 67%;
 
-    --radius: 4px;                 /* Crisp border-radius per minimalist protocol */
+    --radius: 0.5rem;
   }
 }
 
 :root {
-  font-family: 'Geist', 'SF Pro Display', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: 'Geist', 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   color-scheme: dark;
-  letter-spacing: -0.01em;
 }
 
-/* Subtle physical active micro-scale on interactive elements */
-button:active {
-  transform: scale(0.98);
-}
-
-/* Monospace metadata, code, and keycaps */
-kbd {
-  font-family: 'Geist Mono', 'JetBrains Mono', monospace;
-}
-
-/* Minimalist scrollbars */
+/* Polished scrollbars */
 ::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -64,10 +52,26 @@ kbd {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #232326;
-  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  transition: background 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #36363c;
+  background: rgba(99, 102, 241, 0.45);
 }
+
+/* Glassmorphic utilities */
+.glass-panel {
+  background: rgba(17, 17, 26, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Monaco active line highlight decoration */
+.monaco-line-highlight {
+  background: rgba(99, 102, 241, 0.15) !important;
+  border-left: 3px solid #6366f1 !important;
+}
+

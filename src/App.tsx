@@ -286,23 +286,29 @@ export function App() {
         </DndContext>
       </div>
 
-      <footer className="h-6 bg-background border-t border-border text-muted-foreground flex items-center justify-between px-3 text-[11px] select-none shrink-0">
+      <footer className="h-6.5 bg-[#0c0c14] border-t border-white/[0.08] text-zinc-400 flex items-center justify-between px-4 text-[11px] select-none shrink-0 font-mono">
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-            <span className="text-foreground font-medium">Ready</span>
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span className="text-zinc-200 font-medium font-sans">Ready</span>
           </div>
-          <span className="text-border">•</span>
-          <span>
-            Selected: <span className="font-mono text-primary font-medium">{selectedComponentId || 'None'}</span>
-          </span>
+          <span className="text-zinc-700">•</span>
+          <div className="flex items-center gap-1.5 font-sans">
+            <span className="text-zinc-500">Focus:</span>
+            <span className="font-mono text-indigo-400 font-semibold px-1.5 py-0.2 rounded bg-indigo-500/10 border border-indigo-500/20">
+              {selectedComponentId || 'None'}
+            </span>
+          </div>
         </div>
-        <div className="flex items-center gap-3 font-mono text-[10px]">
+        <div className="flex items-center gap-3 text-[10px] text-zinc-500">
           <span>Split: {Math.round(splitRatio * 100)}% / {Math.round((1 - splitRatio) * 100)}%</span>
-          <span className="text-border">•</span>
+          <span className="text-zinc-700">•</span>
           <span>UTF-8</span>
-          <span className="text-border">•</span>
-          <span>Java Swing</span>
+          <span className="text-zinc-700">•</span>
+          <span className="text-zinc-300">Java Swing (JDK 8+)</span>
         </div>
       </footer>
       </div>
