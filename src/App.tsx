@@ -13,6 +13,7 @@ import { Canvas } from './components/Canvas';
 import { PropertyInspector } from './components/PropertyInspector';
 import { MonacoPanel } from './components/MonacoPanel';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { TooltipProvider } from './components/ui/tooltip';
 import { useBuilderStore } from './store/useBuilderStore';
 import { undo, redo, canUndo, canRedo } from './store/history';
 import { 
@@ -220,8 +221,9 @@ export function App() {
   });
 
   return (
-    <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#181818] text-[#cccccc]">
-      <Toolbar
+    <TooltipProvider delayDuration={200}>
+      <div className="flex flex-col h-screen w-screen overflow-hidden bg-background text-foreground">
+        <Toolbar
         onExportJava={handleExportJava}
         onSaveProject={handleSaveProject}
         onLoadProject={handleLoadProject}
@@ -284,21 +286,27 @@ export function App() {
         </DndContext>
       </div>
 
-      <footer className="h-5 bg-[#007acc] text-white flex items-center justify-between px-3 text-[11px] select-none shrink-0 font-sans">
+      <footer className="h-6 bg-background border-t border-border text-muted-foreground flex items-center justify-between px-3 text-[11px] select-none shrink-0">
         <div className="flex items-center gap-3">
-          <span>Ready</span>
-          <span>•</span>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            <span className="text-foreground font-medium">Ready</span>
+          </div>
+          <span className="text-border">•</span>
           <span>
-            Selected: <span className="font-mono font-bold">{selectedComponentId || 'None'}</span>
+            Selected: <span className="font-mono text-primary font-medium">{selectedComponentId || 'None'}</span>
           </span>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 font-mono text-[10px]">
           <span>Split: {Math.round(splitRatio * 100)}% / {Math.round((1 - splitRatio) * 100)}%</span>
+          <span className="text-border">•</span>
           <span>UTF-8</span>
-          <span>LF</span>
+          <span className="text-border">•</span>
+          <span>Java Swing</span>
         </div>
       </footer>
-    </div>
+      </div>
+    </TooltipProvider>
   );
 }
 

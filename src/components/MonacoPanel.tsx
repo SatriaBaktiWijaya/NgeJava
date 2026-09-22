@@ -1,7 +1,10 @@
 import React, { useRef, useEffect } from 'react';
 import Editor, { OnMount } from '@monaco-editor/react';
 import type * as Monaco from 'monaco-editor';
-import { FileCode2, Copy, Check } from 'lucide-react';
+import { FileCode2, Copy, Check, Lock } from 'lucide-react';
+import { Button } from './ui/button';
+import { Badge } from './ui/badge';
+import { Tooltip, TooltipTrigger, TooltipContent } from './ui/tooltip';
 
 interface MonacoPanelProps {
   code: string;
@@ -22,7 +25,6 @@ export const MonacoPanel: React.FC<MonacoPanelProps> = ({
     editorRef.current = editor;
   };
 
-  // Synchronize line highlight when selectedLineRange changes (Fase 4 feature primed)
   useEffect(() => {
     if (!editorRef.current || !selectedLineRange) {
       if (editorRef.current && decorationsRef.current.length > 0) {
@@ -43,7 +45,7 @@ export const MonacoPanel: React.FC<MonacoPanelProps> = ({
           },
           options: {
             isWholeLine: true,
-            className: 'bg-[#094771]/30 border-l-2 border-[#007acc]',
+            className: 'bg-primary/20 border-l-2 border-primary',
           },
         },
       ]);
@@ -59,42 +61,51 @@ export const MonacoPanel: React.FC<MonacoPanelProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full w-full bg-[#1e1e1e]">
+    <div className="flex flex-col h-full w-full bg-[#18181b]">
       {/* Editor Header Bar */}
-      <div className="h-10 bg-[#252526] border-b border-[#3c3c3c] flex items-center justify-between px-3 text-xs text-[#cccccc]">
-        <div className="flex items-center gap-2">
-          <FileCode2 className="w-4 h-4 text-[#007acc]" />
-          <span className="font-semibold text-[#e1e1e1]">GeneratedForm.java</span>
-          <span className="px-2 py-0.5 rounded-full bg-[#333333] text-[10px] text-[#858585] uppercase tracking-wider font-medium">
-            Java Swing
-          </span>
-        </div>
-
-        <div className="flex items-center gap-3">
-          {/* Read-Only Notice Badge */}
-          <div className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#383838]/80 text-[#aaaaaa] text-[11px] border border-[#444444]">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-            <span>Generated — read-only</span>
+      <div className="h-10 bg-background/80 backdrop-blur border-b border-border flex items-center justify-between px-3.5 text-xs">
+        <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2 px-2.5 py-1 rounded-md bg-muted/40 border border-border/60">
+            <FileCode2 className="w-3.5 h-3.5 text-primary" />
+            <span className="font-medium text-foreground text-xs">GeneratedForm.java</span>
           </div>
 
-          {/* Copy Button */}
-          <button
-            onClick={handleCopy}
-            className="flex items-center gap-1 px-2.5 py-1 rounded bg-[#333333] hover:bg-[#444444] text-[#cccccc] hover:text-white transition-colors text-xs cursor-pointer"
-            title="Copy generated code"
-          >
-            {copied ? (
-              <>
-                <Check className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-emerald-400">Copied!</span>
-              </>
-            ) : (
-              <>
-                <Copy className="w-3.5 h-3.5" />
-                <span>Copy Code</span>
-              </>
-            )}
-          </button>
+          <Badge variant="secondary" className="text-[10px] px-2 h-4 font-mono font-normal">
+            Swing (JDK 8+)
+          </Badge>
+        </div>
+
+        <div className="flex items-center gap-2.5">
+          {/* Read-Only Notice Badge */}
+          <Badge variant="outline" className="gap-1 text-[11px] font-normal px-2 py-0.5 border-border/80 text-muted-foreground bg-muted/20">
+            <Lock className="w-3 h-3 text-amber-400" />
+            <span>Generated (Read-only)</span>
+          </Badge>
+
+          {/* Copy Code Button */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleCopy}
+                className="gap-1.5 h-7 text-xs border-border/80 hover:bg-accent"
+              >
+                {copied ? (
+                  <>
+                    <Check className="w-3 h-3 text-emerald-400" />
+                    <span className="text-emerald-400">Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3 h-3" />
+                    <span>Copy Code</span>
+                  </>
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Copy Java code to clipboard</TooltipContent>
+          </Tooltip>
         </div>
       </div>
 

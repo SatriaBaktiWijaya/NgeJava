@@ -66,7 +66,7 @@ export const SplitPane: React.FC<SplitPaneProps> = ({
       {/* Left panel (Builder: Palette + Canvas + Inspector) */}
       <div
         style={{ width: `${ratio * 100}%` }}
-        className="h-full flex overflow-hidden relative border-r border-[#333333]"
+        className="h-full flex overflow-hidden relative border-r border-border"
       >
         {left}
       </div>
@@ -74,10 +74,10 @@ export const SplitPane: React.FC<SplitPaneProps> = ({
       {/* Resizable Divider */}
       <div
         onMouseDown={handleMouseDown}
-        className="w-1.5 hover:w-2 bg-[#2d2d2d] hover:bg-[#007acc] transition-all cursor-col-resize flex items-center justify-center z-30 group select-none"
+        className="w-1.5 hover:w-2 bg-border/80 hover:bg-primary transition-all cursor-col-resize flex items-center justify-center z-30 group select-none"
         title="Drag to resize panels"
       >
-        <div className="h-8 w-0.5 bg-[#555555] group-hover:bg-white rounded" />
+        <div className="h-6 w-0.5 bg-muted-foreground/40 group-hover:bg-primary-foreground rounded-full" />
       </div>
 
       {/* Right panel (Monaco Code Editor) */}

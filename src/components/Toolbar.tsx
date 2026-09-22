@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Coffee, 
   Download, 
@@ -6,8 +6,21 @@ import {
   RotateCw, 
   Trash2,
   FolderOpen,
-  Save
+  Save,
+  HelpCircle,
+  Sparkles
 } from 'lucide-react';
+import { Button } from './ui/button';
+import { Separator } from './ui/separator';
+import { Badge } from './ui/badge';
+import { Tooltip, TooltipTrigger, TooltipContent } from './ui/tooltip';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from './ui/dialog';
 
 interface ToolbarProps {
   onExportJava?: () => void;
@@ -30,80 +43,184 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   canUndo = false,
   canRedo = false,
 }) => {
+  const [helpOpen, setHelpOpen] = useState(false);
+
   return (
-    <header className="h-10 bg-[#252526] border-b border-[#3c3c3c] flex items-center justify-between px-3 text-xs select-none shrink-0 z-20">
-      {/* Brand & Project Info */}
-      <div className="flex items-center gap-3">
-        <div className="flex items-center gap-1.5 font-bold text-sm tracking-tight text-white">
-          <div className="p-1 rounded bg-[#007acc] text-white">
-            <Coffee className="w-4 h-4" />
+    <>
+      <header className="h-11 bg-background/95 backdrop-blur border-b border-border flex items-center justify-between px-3.5 text-xs select-none shrink-0 z-20">
+        {/* Brand & Project Info */}
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 font-bold text-xs tracking-tight text-foreground">
+            <div className="h-6 w-6 rounded-md bg-primary text-primary-foreground flex items-center justify-center shadow-sm">
+              <Coffee className="w-3.5 h-3.5" />
+            </div>
+            <span className="font-semibold text-sm">NgeJava</span>
+            <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 font-normal text-muted-foreground border-border/80">
+              GUI Builder
+            </Badge>
           </div>
-          <span>JForge</span>
-          <span className="text-xs font-normal text-[#888888]">(NgeJava)</span>
+
+          <Separator orientation="vertical" className="h-4 mx-1" />
+
+          {/* File Operations */}
+          <div className="flex items-center gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onLoadProject}
+                  className="gap-1.5 text-xs h-7 text-muted-foreground hover:text-foreground"
+                >
+                  <FolderOpen className="w-3.5 h-3.5" />
+                  <span>Open</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Open saved JSON project state</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onSaveProject}
+                  className="gap-1.5 text-xs h-7 text-muted-foreground hover:text-foreground"
+                >
+                  <Save className="w-3.5 h-3.5" />
+                  <span>Save</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Save project state (JSON)</TooltipContent>
+            </Tooltip>
+          </div>
+
+          <Separator orientation="vertical" className="h-4 mx-1" />
+
+          {/* History Operations */}
+          <div className="flex items-center gap-0.5">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={onUndo}
+                  disabled={!canUndo}
+                  className="h-7 w-7 text-muted-foreground hover:text-foreground"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Undo (Ctrl+Z)</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={onRedo}
+                  disabled={!canRedo}
+                  className="h-7 w-7 text-muted-foreground hover:text-foreground"
+                >
+                  <RotateCw className="w-3.5 h-3.5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Redo (Ctrl+Y)</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={onDelete}
+                  className="h-7 w-7 text-destructive/80 hover:text-destructive hover:bg-destructive/10 ml-0.5"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Delete selected (Del / Backspace)</TooltipContent>
+            </Tooltip>
+          </div>
         </div>
 
-        <div className="h-4 w-[1px] bg-[#3c3c3c]" />
+        {/* Right Actions */}
+        <div className="flex items-center gap-2">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setHelpOpen(true)}
+                className="h-7 w-7 text-muted-foreground hover:text-foreground"
+              >
+                <HelpCircle className="w-4 h-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Keyboard Shortcuts & Help</TooltipContent>
+          </Tooltip>
 
-        <div className="flex items-center gap-1">
-          <button
-            onClick={onLoadProject}
-            className="flex items-center gap-1 px-2 py-1 rounded hover:bg-[#383838] text-[#cccccc] hover:text-white transition cursor-pointer text-xs"
-            title="Open project (JSON)"
+          <Button
+            onClick={onExportJava}
+            size="sm"
+            className="gap-1.5 h-7 text-xs shadow-sm bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
           >
-            <FolderOpen className="w-3.5 h-3.5" />
-            <span>Open</span>
-          </button>
-          <button
-            onClick={onSaveProject}
-            className="flex items-center gap-1 px-2 py-1 rounded hover:bg-[#383838] text-[#cccccc] hover:text-white transition cursor-pointer text-xs"
-            title="Save project state"
-          >
-            <Save className="w-3.5 h-3.5" />
-            <span>Save</span>
-          </button>
+            <Download className="w-3.5 h-3.5" />
+            <span>Export .java</span>
+          </Button>
         </div>
+      </header>
 
-        <div className="h-4 w-[1px] bg-[#3c3c3c]" />
+      {/* Shortcuts & Help Dialog */}
+      <Dialog open={helpOpen} onOpenChange={setHelpOpen}>
+        <DialogContent className="sm:max-w-[420px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-base">
+              <Sparkles className="w-4 h-4 text-primary" />
+              <span>NgeJava GUI Builder Shortcuts</span>
+            </DialogTitle>
+            <DialogDescription>
+              Keyboard shortcuts and visual tips for fast prototyping.
+            </DialogDescription>
+          </DialogHeader>
 
-        {/* Undo/Redo/Delete */}
-        <div className="flex items-center gap-1">
-          <button
-            onClick={onUndo}
-            disabled={!canUndo}
-            className="p-1 rounded hover:bg-[#383838] disabled:opacity-30 disabled:hover:bg-transparent text-[#cccccc] transition cursor-pointer"
-            title="Undo (Ctrl+Z)"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-          </button>
-          <button
-            onClick={onRedo}
-            disabled={!canRedo}
-            className="p-1 rounded hover:bg-[#383838] disabled:opacity-30 disabled:hover:bg-transparent text-[#cccccc] transition cursor-pointer"
-            title="Redo (Ctrl+Y)"
-          >
-            <RotateCw className="w-3.5 h-3.5" />
-          </button>
-          <button
-            onClick={onDelete}
-            className="p-1 rounded hover:bg-[#383838] text-rose-400 hover:text-rose-300 transition cursor-pointer ml-1"
-            title="Delete selected (Del)"
-          >
-            <Trash2 className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      </div>
-
-      {/* Right Actions */}
-      <div className="flex items-center gap-2">
-        <button
-          onClick={onExportJava}
-          className="flex items-center gap-1.5 px-3 py-1 rounded bg-[#007acc] hover:bg-[#0062a3] text-white font-medium transition cursor-pointer text-xs shadow-sm"
-          title="Export as Java source file"
-        >
-          <Download className="w-3.5 h-3.5" />
-          <span>Export .java</span>
-        </button>
-      </div>
-    </header>
+          <div className="space-y-3 py-2 text-xs">
+            <div className="flex items-center justify-between py-1 border-b border-border/50">
+              <span className="text-muted-foreground">Delete Component</span>
+              <kbd className="px-2 py-0.5 rounded bg-muted border border-border text-[11px] font-mono">
+                Del / Backspace
+              </kbd>
+            </div>
+            <div className="flex items-center justify-between py-1 border-b border-border/50">
+              <span className="text-muted-foreground">Undo Action</span>
+              <kbd className="px-2 py-0.5 rounded bg-muted border border-border text-[11px] font-mono">
+                Ctrl + Z
+              </kbd>
+            </div>
+            <div className="flex items-center justify-between py-1 border-b border-border/50">
+              <span className="text-muted-foreground">Redo Action</span>
+              <kbd className="px-2 py-0.5 rounded bg-muted border border-border text-[11px] font-mono">
+                Ctrl + Y / Shift + Ctrl + Z
+              </kbd>
+            </div>
+            <div className="flex items-center justify-between py-1 border-b border-border/50">
+              <span className="text-muted-foreground">Quick Export .java</span>
+              <kbd className="px-2 py-0.5 rounded bg-muted border border-border text-[11px] font-mono">
+                Ctrl + S
+              </kbd>
+            </div>
+            <div className="flex items-center justify-between py-1 border-b border-border/50">
+              <span className="text-muted-foreground">Instant Add Component</span>
+              <span className="text-muted-foreground text-[11px]">Click '+' in Palette</span>
+            </div>
+            <div className="flex items-center justify-between py-1">
+              <span className="text-muted-foreground">Resize Component</span>
+              <span className="text-muted-foreground text-[11px]">Drag bottom-right handle</span>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
