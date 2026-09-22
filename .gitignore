@@ -36,3 +36,10 @@ build/
 .settings/
 .project
 .classpath
+
+# Node & Frontend
+node_modules/
+dist/
+
+# Rust / Tauri
+src-tauri/target/
