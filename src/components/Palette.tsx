@@ -9,15 +9,12 @@ import {
   AlignLeft, 
   CheckSquare,
   Component,
-  GripVertical,
   Plus,
   Search
 } from 'lucide-react';
 import { COMPONENT_REGISTRY } from '../registry/componentRegistry';
 import { useBuilderStore } from '../store/useBuilderStore';
-import { Badge } from './ui/badge';
 import { Input } from './ui/input';
-import { Tooltip, TooltipTrigger, TooltipContent } from './ui/tooltip';
 
 interface PaletteItemProps {
   type: string;
@@ -53,40 +50,33 @@ const DraggablePaletteItem: React.FC<PaletteItemProps> = ({
       {...listeners}
       {...attributes}
       onDoubleClick={() => !disabled && onAddDirectly && onAddDirectly(type)}
-      className={`group flex items-center justify-between px-2.5 py-1.5 rounded-md border text-xs transition-all shadow-xs select-none ${
+      className={`group flex items-center justify-between px-2.5 py-1.5 rounded-[4px] border text-xs transition-all select-none ${
         disabled
-          ? 'bg-muted/30 border-border/40 text-muted-foreground/50 cursor-not-allowed'
+          ? 'bg-muted/20 border-border/40 text-muted-foreground/40 cursor-not-allowed'
           : isDragging
-          ? 'bg-primary/20 border-primary text-primary-foreground cursor-grabbing shadow-md'
-          : 'bg-card hover:bg-accent/70 border-border/70 text-foreground/90 cursor-grab active:cursor-grabbing hover:border-border'
+          ? 'bg-card border-foreground/40 text-foreground cursor-grabbing'
+          : 'bg-card hover:bg-secondary/70 border-border text-foreground/90 cursor-grab active:cursor-grabbing hover:border-foreground/20'
       }`}
     >
-      <div className="flex items-center gap-2.5">
-        <div className="p-1 rounded bg-muted/60 text-foreground/80 group-hover:text-primary transition-colors">
+      <div className="flex items-center gap-2">
+        <span className="text-muted-foreground group-hover:text-foreground transition-colors">
           {icon}
-        </div>
-        <span className="font-medium text-xs">{label}</span>
+        </span>
+        <span className="font-normal text-xs">{label}</span>
       </div>
 
       {!disabled && (
-        <div className="flex items-center gap-0.5">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (onAddDirectly) onAddDirectly(type);
-                }}
-                className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-primary/20 text-primary transition-opacity cursor-pointer"
-              >
-                <Plus className="w-3.5 h-3.5" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="right">Add to canvas</TooltipContent>
-          </Tooltip>
-          <GripVertical className="w-3.5 h-3.5 text-muted-foreground/50 group-hover:text-muted-foreground/80 transition-colors" />
-        </div>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            if (onAddDirectly) onAddDirectly(type);
+          }}
+          title="Add to canvas"
+          className="opacity-0 group-hover:opacity-100 p-0.5 rounded-[3px] hover:bg-foreground/10 text-muted-foreground hover:text-foreground transition cursor-pointer"
+        >
+          <Plus className="w-3.5 h-3.5" />
+        </button>
       )}
     </div>
   );
@@ -109,8 +99,8 @@ export const Palette: React.FC = () => {
     }
     if (targetContainer) {
       addComponent(targetContainer, type, { 
-        x: 30 + Math.floor(Math.random() * 50), 
-        y: 30 + Math.floor(Math.random() * 50) 
+        x: 30 + Math.floor(Math.random() * 40), 
+        y: 30 + Math.floor(Math.random() * 40) 
       });
     }
   };
@@ -126,15 +116,16 @@ export const Palette: React.FC = () => {
   }
 
   const getIcon = (iconName: string) => {
+    const iconClass = "w-3.5 h-3.5";
     switch (iconName) {
-      case 'Square': return <Square className="w-3.5 h-3.5 text-sky-400" />;
-      case 'Layers': return <Layers className="w-3.5 h-3.5 text-indigo-400" />;
-      case 'MousePointerClick': return <MousePointerClick className="w-3.5 h-3.5 text-emerald-400" />;
-      case 'Type': return <Type className="w-3.5 h-3.5 text-amber-400" />;
-      case 'FormInput': return <FormInput className="w-3.5 h-3.5 text-cyan-400" />;
-      case 'AlignLeft': return <AlignLeft className="w-3.5 h-3.5 text-violet-400" />;
-      case 'CheckSquare': return <CheckSquare className="w-3.5 h-3.5 text-pink-400" />;
-      default: return <Component className="w-3.5 h-3.5 text-muted-foreground" />;
+      case 'Square': return <Square className={iconClass} />;
+      case 'Layers': return <Layers className={iconClass} />;
+      case 'MousePointerClick': return <MousePointerClick className={iconClass} />;
+      case 'Type': return <Type className={iconClass} />;
+      case 'FormInput': return <FormInput className={iconClass} />;
+      case 'AlignLeft': return <AlignLeft className={iconClass} />;
+      case 'CheckSquare': return <CheckSquare className={iconClass} />;
+      default: return <Component className={iconClass} />;
     }
   };
 
@@ -146,41 +137,38 @@ export const Palette: React.FC = () => {
   const controls = entries.filter((e) => !e.isContainer);
 
   return (
-    <div className="w-[240px] h-full bg-background border-r border-border flex flex-col select-none shrink-0 z-10">
+    <div className="w-[220px] h-full bg-background border-r border-border flex flex-col select-none shrink-0 z-10">
       {/* Header */}
-      <div className="h-10 px-3.5 border-b border-border flex items-center justify-between bg-muted/20">
-        <div className="flex items-center gap-2 text-xs font-semibold text-foreground/90 tracking-wide uppercase">
-          <Component className="w-3.5 h-3.5 text-primary" />
-          <span>Palette</span>
-        </div>
-        <Badge variant="secondary" className="text-[10px] px-1.5 h-4 font-mono font-normal">
-          {entries.length} items
-        </Badge>
+      <div className="h-10 px-3 border-b border-border flex items-center justify-between">
+        <span className="text-xs font-medium text-foreground tracking-tight">
+          Components
+        </span>
+        <span className="text-[10px] font-mono text-muted-foreground px-1.5 py-0.5 rounded-[3px] bg-secondary">
+          {entries.length}
+        </span>
       </div>
 
-      {/* Quick Search */}
-      <div className="p-2 border-b border-border/50">
+      {/* Minimalist Search */}
+      <div className="p-2 border-b border-border/60">
         <div className="relative">
-          <Search className="w-3 h-3 text-muted-foreground absolute left-2.5 top-2" />
+          <Search className="w-3 h-3 text-muted-foreground/70 absolute left-2.5 top-2" />
           <Input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search components..."
-            className="pl-7 h-7 text-xs bg-muted/40 border-border/60 placeholder:text-muted-foreground/60"
+            placeholder="Search..."
+            className="pl-7 h-7 text-xs bg-card border-border rounded-[4px] focus-visible:ring-1 focus-visible:ring-border placeholder:text-muted-foreground/50"
           />
         </div>
       </div>
 
-      {/* Items List */}
-      <div className="flex-1 overflow-y-auto p-2.5 space-y-4">
-        {/* Containers */}
+      {/* Categorized List */}
+      <div className="flex-1 overflow-y-auto p-2 space-y-4">
         {containers.length > 0 && (
           <div>
-            <div className="px-1.5 py-1 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider flex items-center justify-between">
-              <span>Containers</span>
-              <span className="text-[9px] font-mono">{containers.length}</span>
+            <div className="px-1 py-1 text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
+              Containers
             </div>
-            <div className="space-y-1 mt-1">
+            <div className="space-y-1 mt-0.5">
               {containers.map((item) => (
                 <DraggablePaletteItem
                   key={item.type}
@@ -195,14 +183,12 @@ export const Palette: React.FC = () => {
           </div>
         )}
 
-        {/* Controls */}
         {controls.length > 0 && (
           <div>
-            <div className="px-1.5 py-1 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider flex items-center justify-between">
-              <span>Swing Controls</span>
-              <span className="text-[9px] font-mono">{controls.length}</span>
+            <div className="px-1 py-1 text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
+              Controls
             </div>
-            <div className="space-y-1 mt-1">
+            <div className="space-y-1 mt-0.5">
               {controls.map((item) => (
                 <DraggablePaletteItem
                   key={item.type}
@@ -215,16 +201,10 @@ export const Palette: React.FC = () => {
             </div>
           </div>
         )}
-
-        {entries.length === 0 && (
-          <div className="p-4 text-center text-xs text-muted-foreground">
-            No components match "{searchQuery}"
-          </div>
-        )}
       </div>
 
-      <div className="p-2 border-t border-border text-[10px] text-muted-foreground text-center bg-muted/10">
-        Drag or click <span className="text-primary font-bold">+</span> to add to form
+      <div className="p-2 border-t border-border text-[10px] font-mono text-muted-foreground/80 text-center">
+        Drag to canvas or click +
       </div>
     </div>
   );

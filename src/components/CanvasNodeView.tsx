@@ -182,16 +182,16 @@ export const CanvasNodeView: React.FC<CanvasNodeViewProps> = ({ node }) => {
       }}
       className={`group ${
         isSelected
-          ? 'ring-2 ring-[#007acc] ring-offset-1 ring-offset-transparent'
-          : 'hover:ring-1 hover:ring-sky-400/60'
+          ? 'ring-1.5 ring-zinc-800 ring-offset-1 ring-offset-transparent'
+          : 'hover:ring-1 hover:ring-zinc-400/50'
       }`}
     >
-      {/* Draggable handle bar / badge on hover/select */}
+      {/* Draggable handle bar / badge on select */}
       {isSelected && (
         <div
           {...listeners}
           {...attributes}
-          className="absolute -top-5 left-0 px-1.5 py-0.2 rounded bg-[#007acc] text-white text-[9px] font-mono tracking-tight cursor-move flex items-center gap-1 shadow select-none"
+          className="absolute -top-5 left-0 px-1.5 py-0.5 rounded-[2px] bg-[#18181b] border border-zinc-700 text-zinc-200 text-[9px] font-mono tracking-tight cursor-move flex items-center gap-1 shadow-micro select-none"
         >
           <span>{node.varName}</span>
         </div>
@@ -206,7 +206,7 @@ export const CanvasNodeView: React.FC<CanvasNodeViewProps> = ({ node }) => {
       {isSelected && (
         <div
           onMouseDown={handleResizeMouseDown}
-          className="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-[#007acc] border border-white rounded-none cursor-se-resize z-50 shadow-sm"
+          className="absolute -bottom-1 -right-1 w-2 h-2 bg-zinc-800 border border-zinc-400 rounded-[1px] cursor-se-resize z-50"
           title="Drag to resize"
         />
       )}

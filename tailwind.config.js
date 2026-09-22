@@ -6,14 +6,12 @@ export default {
     './src/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    container: {
-      center: true,
-      padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
-    },
     extend: {
+      fontFamily: {
+        sans: ['Geist', 'SF Pro Display', 'Helvetica Neue', 'sans-serif'],
+        mono: ['"Geist Mono"', '"JetBrains Mono"', 'monospace'],
+        serif: ['"Instrument Serif"', 'Newsreader', 'serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -48,31 +46,20 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        editor: {
-          bg: '#18181b',
-          surface: '#202023',
-          border: '#27272a',
-          active: '#0284c7',
-        },
+        pastel: {
+          blue: { bg: '#132230', text: '#7dd3fc', border: '#1e3a5f' },
+          green: { bg: '#122417', text: '#86efac', border: '#1d4a2b' },
+          yellow: { bg: '#291e0a', text: '#fde047', border: '#523c14' },
+          red: { bg: '#2b1416', text: '#fca5a5', border: '#542025' },
+        }
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        lg: "6px",
+        md: "4px",
+        sm: "3px",
       },
-      keyframes: {
-        "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
-        },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
-        },
-      },
-      animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
+      boxShadow: {
+        'micro': '0 1px 2px rgba(0, 0, 0, 0.04)',
       },
     },
   },

@@ -4,47 +4,59 @@
 
 @layer base {
   :root {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
+    /* Minimalist-UI Warm Monochrome Palette */
+    --background: 240 6% 5%;       /* #0c0c0e */
+    --foreground: 0 0% 93%;        /* #ededed */
 
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
+    --card: 240 5% 7.5%;           /* #131315 */
+    --card-foreground: 0 0% 93%;
 
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 240 5% 7.5%;
+    --popover-foreground: 0 0% 93%;
 
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 0 0% 93%;           /* Solid off-white for CTA */
+    --primary-foreground: 240 6% 6%;
 
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 240 4% 11%;
+    --secondary-foreground: 0 0% 93%;
 
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+    --muted: 240 4% 11%;
+    --muted-foreground: 240 3% 55%;
 
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 240 4% 13%;
+    --accent-foreground: 0 0% 93%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 355 60% 30%;
+    --destructive-foreground: 0 0% 95%;
 
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 217.2 91.2% 59.8%;
+    --border: 240 4% 13.5%;        /* Crisp 1px boundary #222225 */
+    --input: 240 4% 13.5%;
+    --ring: 240 4% 30%;
 
-    --radius: 0.5rem;
+    --radius: 4px;                 /* Crisp border-radius per minimalist protocol */
   }
 }
 
 :root {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", Helvetica, Arial, sans-serif;
+  font-family: 'Geist', 'SF Pro Display', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color-scheme: dark;
+  letter-spacing: -0.01em;
 }
 
-/* Custom scrollbars */
+/* Subtle physical active micro-scale on interactive elements */
+button:active {
+  transform: scale(0.98);
+}
+
+/* Monospace metadata, code, and keycaps */
+kbd {
+  font-family: 'Geist Mono', 'JetBrains Mono', monospace;
+}
+
+/* Minimalist scrollbars */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -52,10 +64,10 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #27272a;
-  border-radius: 9999px;
+  background: #232326;
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3f3f46;
+  background: #36363c;
 }
